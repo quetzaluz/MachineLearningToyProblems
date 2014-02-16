@@ -145,6 +145,8 @@ raw_input("\n\nHit enter to continue...")
 
 print "Extracting Features from Training Set"
 
+pp.pprint(known_data_points)
+
 train_set = apply_features(feature_extracting_function, known_data_points)
 
 
@@ -182,7 +184,6 @@ raw_input("\n\nHit enter to continue...")
 
 print "Training Custom Naive Bayes Classifier"
 
-# Initial implementation of custom Bayes Classifier. 
 nb = MyNaiveBayesClassifier()
 nb.train(train_set)
 

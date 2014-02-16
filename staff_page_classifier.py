@@ -1,7 +1,7 @@
 # Staff Webpage Content Classifier
 
 # This excercise applies the Natural Language Tool Kit library (NLTK) for python to classify data from 2,772 academic staff pages.
-# So far this model is only classifying along the basis of two categories, 'A' and 'B', which have been sorted by instructor Daniel Wiesental (dw@cs.stanford.edu)
+# So far this model is only classifying along the basis of two categories, 'A' and 'B', which correspond to faculty and student pages.
 
 #Required libraries
 
@@ -72,8 +72,8 @@ def feature_extracting_function(data_point):
     #Create a dictionary of features (True for each feature present, implicit False for absent features).  In this case, features are words, but they could be bigger or smaller, simpler or more complex.
 
     for word in words:
-
-        features["contains_word_(%s)" % word] = True
+        # filter out words of less than 2 characters, see impact on accuracy
+        if len(word) >= 3: features["contains_word_(%s)" % word] = True
 
     return features
 
