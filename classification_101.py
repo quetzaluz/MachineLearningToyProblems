@@ -183,17 +183,27 @@ print "Training Custom Naive Bayes Classifier"
 # Initial implementation of custom Bayes Classifier. 
 class MyNBayesClassifier: 
     def __init__(self):
+        # An list containing the Classifier labels, EG ["miss", "match"]
         self.classifiers = []
-        self.train_data = []
+        # An list containing arrays (may later be converted to tuples) with feature data. Stores the Classifier label, the feature label, and the frequency within the set
+        self.features = []
 
-    def parseData(self, training_data):
+    def train(self, training_data):
+        test = (1, 2, 3)
         for data in training_data:
             if data[1] not in self.classifiers:
                 self.classifiers.append(data[1])
+            for feature in data[0]:
+                feature_exists = False
+                for tup in self.features:
+                    if feature == tup[1] and tup[0] == data[1]:
+                        tup[2] += 1
+                        feature_exists = True
+                if not feature_exists:
+                    self.features.append([data[1], feature, 1])
 
 myClassifier = MyNBayesClassifier()
-myClassifier.parseData(train_set)
-
+myClassifier.train(train_set)
 
 raw_input("\n\nHit enter to continue...")
 
