@@ -205,23 +205,25 @@ class MyNBayesClassifier:
                     # feature data:     label, feature, frequency
                     self.features.append([data[1], feature, 1])
 
-    def classify(self, feature):
+    def classify(self, feature_list):
         #todo: refactor label probability calculation, possibly storing this as class properties
-        classifier_prob = {}
+        classifier_freq = {}
         all_features = len(self.features)
         for feature in self.features:
             label = feature[0]
             try:
-                classifier_prob[label] += 1
+                classifier_freq[label] += 1
             except KeyError:
-                classifier_prob[label] = 1
+                classifier_freq[label] = 1
 
+        classifier_prob = classifier_freq
         for key in classifier_prob:
             classifier_prob[key] = float(classifier_prob[key])/float(all_features)
-            for feature in self.features:
-                if feature[0] == key:
-                    classifier_prob[key] *= float(feature[2])/float(all_features)
-
+        for feat in self.features:
+            for feature in feature_list:
+                if feature == feat[1]:
+                    classifier_prob[feat[0]] += float(feat[2])/float(classifier_freq[feat[0]])
+ 
         # Class probabilities have been calculated: One last iteration to determine most likely
         most_likely_classifier = [0, 0]
         for key in classifier_prob:
