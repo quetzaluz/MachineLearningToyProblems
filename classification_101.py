@@ -187,10 +187,12 @@ class MyNBayesClassifier:
         self.classifiers = []
         # An list containing arrays (may later be converted to tuples) with feature data. Stores the Classifier label, the feature label, and the frequency within the set
         self.features = []
+        self.training_set_size = 0
 
     def train(self, training_data):
         test = (1, 2, 3)
         for data in training_data:
+            self.training_set_size += 1
             if data[1] not in self.classifiers:
                 self.classifiers.append(data[1])
             for feature in data[0]:
@@ -200,10 +202,35 @@ class MyNBayesClassifier:
                         tup[2] += 1
                         feature_exists = True
                 if not feature_exists:
+                    # feature data:     label, feature, frequency
                     self.features.append([data[1], feature, 1])
 
-myClassifier = MyNBayesClassifier()
-myClassifier.train(train_set)
+    def classify(self, feature):
+        #todo: refactor label probability calculation, possibly storing this as class properties
+        classifier_prob = {}
+        all_features = len(self.features)
+        for feature in self.features:
+            label = feature[0]
+            try:
+                classifier_prob[label] += 1
+            except KeyError:
+                classifier_prob[label] = 1
+
+        for key in classifier_prob:
+            classifier_prob[key] = float(classifier_prob[key])/float(all_features)
+            for feature in self.features:
+                if feature[0] == key:
+                    classifier_prob[key] *= float(feature[2])/float(all_features)
+
+        # Class probabilities have been calculated: One last iteration to determine most likely
+        most_likely_classifier = [0, 0]
+        for key in classifier_prob:
+            if classifier_prob[key] >= most_likely_classifier[1]:
+                most_likely_classifier = [key, classifier_prob[key]]
+        return most_likely_classifier[0]
+
+nb = MyNBayesClassifier()
+nb.train(train_set)
 
 raw_input("\n\nHit enter to continue...")
 
