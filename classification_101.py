@@ -184,7 +184,7 @@ print "Training Custom Naive Bayes Classifier"
 class MyNBayesClassifier: 
     def __init__(self):
         # An list containing the Classifier labels, EG ["miss", "match"]
-        self.classifiers = []
+        self.classifiers = {}
         # An list containing arrays (may later be converted to tuples) with feature data. Stores the Classifier label, the feature label, and the frequency within the set
         self.features = []
         self.training_set_size = 0
@@ -194,7 +194,9 @@ class MyNBayesClassifier:
         for data in training_data:
             self.training_set_size += 1
             if data[1] not in self.classifiers:
-                self.classifiers.append(data[1])
+                self.classifiers[data[1]] = 1
+            else:
+                self.classifiers[data[1]] += 1
             for feature in data[0]:
                 feature_exists = False
                 for tup in self.features:
@@ -207,16 +209,8 @@ class MyNBayesClassifier:
 
     def classify(self, feature_list):
         #todo: refactor label probability calculation, possibly storing this as class properties
-        classifier_freq = {}
         all_features = len(self.features)
-        for feature in self.features:
-            label = feature[0]
-            try:
-                classifier_freq[label] += 1
-            except KeyError:
-                classifier_freq[label] = 1
-
-        classifier_prob = classifier_freq
+        classifier_freq = classifier_prob = self.classifiers.copy()
         for key in classifier_prob:
             classifier_prob[key] = float(classifier_prob[key])/float(all_features)
         for feat in self.features:
